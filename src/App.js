@@ -1,8 +1,8 @@
-import { Home } from "./components_backup/Home";
-import { Signin } from "./components_backup/Signin";
+import { Home } from "./components/Home";
+import { Signin } from "./components/Signin";
 import "./styles.css";
-import React, { Fragment, useContext, useEffect } from "react";
-import { UserContext } from "./components_backup/UserProvider";
+import React, { Fragment, useContext } from "react";
+import { UserContext } from "./components/UserProvider";
 // import Home from "./components/Home";
 import { AskSwitchProvider } from "./contexts/AskSwitchContext";
 

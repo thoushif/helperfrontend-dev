@@ -14,7 +14,7 @@ export const configurations = () => {
     storageBucket: "helphelper-2021.appspot.com",
     messagingSenderId: "536892303959",
     appId: "1:536892303959:web:7b599f0a2c7ca7d4b35112",
-    measurementId: "G-BF59R4Y1G5",
+    measurementId: "G-BF59R4Y1G5"
   };
 
   if (process.env.NODE_ENV === "development") {
@@ -35,10 +35,10 @@ if (!firebase.apps.length) {
 
 export const auth = firebase.auth();
 const db = firebase.firestore();
-const baseUrl = "http://localhost:8000";
+const baseUrl = process.env.SERVER_API_URL;
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({
-  promt: "select_account",
+  promt: "select_account"
 });
 export const signInWithGoogle = () =>
   auth
@@ -53,43 +53,47 @@ export const signInWithGoogle = () =>
 export { db };
 
 const checkIfUserExists = async (result) => {
-  const apiUrl = `${baseUrl}/helpers/?user_id=${result.user.uid}`;
+  const apiUrl = `${baseUrl}/helpers/${result.user.uid}`;
   await axios
     .get(apiUrl)
     .then((response) => response.data)
     .then((data) => {
-      console.log(data);
-      if (data.count === 0) {
+      console.log("data of user--------------->", data.data.helper);
+      if (!data.data.helper) {
+        console.log("user not present  with us....loading new data");
         let dataToPost = {
-          user_id: result.user.uid,
-          display_name: result.user.displayName,
+          uid: result.user.uid,
+          displayName: result.user.displayName,
           email: result.user.email,
-          photo_url: result.user.photoURL,
-          login_time: new Date(),
+          photoURL: result.user.photoURL,
+          phoneNumber: result.user.phoneNumber
         };
         const apiUrlMain = `${baseUrl}/helpers/`;
         fetch(apiUrlMain, {
           method: "POST",
           body: JSON.stringify(dataToPost),
           headers: {
-            "Content-Type": "application/json",
-          },
+            "Content-Type": "application/json"
+          }
         })
           .then((response) => response.json())
           .then((response) => console.log("Success:", JSON.stringify(response)))
           .catch((error) => console.error("Error:", error));
       } else {
-        const apiUrlMain = `${baseUrl}/helpers/`;
+        console.log("user  present  with us....just updating");
+        const apiUrlMain = `${baseUrl}/helpers/${result.user.uid}`;
         let dataToPost = {
-          user_id: result.user.uid,
-          login_time: new Date(),
+          displayName: result.user.displayName,
+          email: result.user.email,
+          photoURL: result.user.photoURL,
+          phoneNumber: result.user.phoneNumber
         };
         fetch(apiUrlMain, {
           method: "PATCH",
           body: JSON.stringify(dataToPost),
           headers: {
-            "Content-Type": "application/json",
-          },
+            "Content-Type": "application/json"
+          }
         })
           .then((response) => response.json())
           .then((response) => console.log("Success:", JSON.stringify(response)))

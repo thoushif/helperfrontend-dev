@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom";
-import UserProvider from "./components_backup/UserProvider";
+import UserProvider from "./components/UserProvider";
 
 import App from "./App";
 
